@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-background: 241 242 248;
+  --secondary-background: 249 250 252;
+  --primary-text: 39 40 45;
+  --secondary-text: 150 157 176;
+  --accent-text: 53 148 255;
+  --accent-background: 221 236 255;
+  --border: 216 218 225;
+  --background-card: 255 255 255;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(var(--primary-background));
+  color: rgb(var(--primary-text));
+  border-color: rgb(var(--border));
+  font-family: 'Poppins', sans-serif;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
