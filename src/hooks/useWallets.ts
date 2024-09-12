@@ -6,7 +6,7 @@ import {
   getOneWallets,
   updateWallets,
 } from '../services/walletsService';
-import { IWallet, IWalletUpdate } from '../types/walletTypes';
+import { IWallet, IWalletCreate, IWalletUpdate } from '../types/walletTypes';
 
 export const useWallets = () => {
   const [wallets, setWallets] = useState<IWallet[] | []>([]);
@@ -39,7 +39,7 @@ export const useWallets = () => {
   }, []);
 
   const handleCreateWallets = useCallback(
-    async ({ name }: IWallet) => {
+    async ({ name }: IWalletCreate) => {
       setIsLoading(true);
       try {
         await createWallets({ name });

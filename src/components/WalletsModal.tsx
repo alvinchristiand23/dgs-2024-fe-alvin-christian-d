@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useWallets } from '../hooks/useWallets';
-import { IWallet } from '../types/walletTypes';
-import InputSelect from './InputSelect';
+import { IWalletCreate, IWalletUpdate } from '../types/walletTypes';
 import Input from './Input';
 import ButtonAction from './ButtonAction';
-import { useCategories } from '../hooks/useCategories';
 import { ClipLoader } from 'react-spinners';
-import { ICategoryCreate, ICategoryUpdate } from '../types/categoryTypes';
 
 interface IProps {
   isOpen: boolean;
@@ -14,20 +11,16 @@ interface IProps {
   type?: 'Add' | 'Edit' | '';
   id?: string;
   isLoading: boolean;
-  onCreate: ({ wallet, name }: ICategoryCreate) => void;
-  onUpdate: ({ id, name }: ICategoryUpdate) => void;
+  onCreate: ({ name }: IWalletCreate) => void;
+  onUpdate: ({ id, name }: IWalletUpdate) => void;
 }
 
-const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpdate }: IProps) => {
-  const { wallets } = useWallets();
+const WalletsModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpdate }: IProps) => {
+  const { handleGetOneWallets } = useWallets();
 
-  const { handleGetOneCategories } = useCategories();
-
-  const [wallet, setWallet] = useState<string>(id ? id : '');
   const [name, setName] = useState<string>('');
 
   const resetForm = () => {
-    setWallet('');
     setName('');
   };
 
@@ -43,14 +36,13 @@ const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpd
   }, [onClose]);
 
   const getDetailCategories = useCallback(async () => {
-    console.log(id);
     if (id) {
-      const res = await handleGetOneCategories(id);
+      const res = await handleGetOneWallets(id);
       if (res) {
         setName(res.name);
       }
     }
-  }, [id, handleGetOneCategories]);
+  }, [id, handleGetOneWallets]);
 
   useEffect(() => {
     getDetailCategories();
@@ -63,7 +55,7 @@ const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpd
 
   const handleButtonAction = async () => {
     if (type === 'Add') {
-      await onCreate({ wallet, name });
+      await onCreate({ name });
     } else if (type === 'Edit' && id) {
       await onUpdate({ id, name });
     }
@@ -89,19 +81,8 @@ const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpd
         >
           ✖
         </button>
-        <h2 className='mb-6 text-xl font-bold'>{type} Categories</h2>
+        <h2 className='mb-6 text-xl font-bold'>{type} Wallets</h2>
         <div className='flex flex-col gap-y-6'>
-          {type === 'Add' ? (
-            <InputSelect
-              placeholder='Wallet'
-              value={wallet}
-              onChange={(value) => setWallet(value)}
-              options={wallets?.map((item: IWallet) => ({
-                label: item.name,
-                value: item._id,
-              }))}
-            />
-          ) : null}
           <Input value={name} onChange={(value) => setName(value)} placeholder='Name' />
           <ButtonAction
             label={
@@ -114,7 +95,7 @@ const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpd
               )
             }
             onClick={handleButtonAction}
-            disabled={type === 'Add' ? !name || !wallet || isLoading : !name || isLoading}
+            disabled={!name || isLoading}
           />
         </div>
       </div>
@@ -122,4 +103,4 @@ const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpd
   );
 };
 
-export default CategoriesModal;
+export default WalletsModal;

@@ -14,7 +14,7 @@ const Header = () => {
       </div>
       <div className='flex gap-x-12'>
         {['Overview', 'Finance', 'Calender', 'Events'].map((item) => (
-          <Link className={`${item === 'Finance' ? 'font-bold' : ''}`} to={'/'}>
+          <Link key={item} className={`${item === 'Finance' ? 'font-bold' : ''}`} to={'/'}>
             {item}
           </Link>
         ))}

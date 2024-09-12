@@ -43,10 +43,10 @@ export const useCategories = () => {
       setIsLoading(true);
       try {
         await createCategories({ wallet, name });
+        await handleGetCategories();
       } catch (error) {
         setIsError(error ? true : false);
       } finally {
-        await handleGetCategories();
         setIsLoading(false);
       }
     },
