@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import Finance from '../pages/Finance';
 
-const AppRouters = () => {
+const AppRoutes = () => {
   return (
     <Router>
       <Routes>
@@ -19,4 +19,4 @@ const AppRouters = () => {
   );
 };
 
-export default AppRouters;
+export default AppRoutes;

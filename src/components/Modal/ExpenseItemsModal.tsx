@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ClipLoader } from 'react-spinners';
+import { useGlobalState } from '../../hooks/useGlobalState';
 import { useExpenseItems } from '../../hooks/useExpenseItems';
-import { useWallets } from '../../hooks/useWallets';
-import { useCategories } from '../../hooks/useCategories';
 import { EFlowType, IExpenseItemCreate, IExpenseItemUpdate } from '../../types/expenseItemsTypes';
 import ButtonAction from '../Button/ButtonAction';
 import Input from '../Input/Input';
@@ -28,8 +27,7 @@ const ExpenseItemsModal = ({
   onUpdate,
 }: IProps) => {
   const { isLoading: isLoadingGetOne, handleGetOneExpenseItems } = useExpenseItems(true);
-  const { wallets } = useWallets();
-  const { categories } = useCategories();
+  const { wallets, categories } = useGlobalState();
 
   const [title, setTitle] = useState<string>('');
   const [amount, setAmount] = useState<string>('0');

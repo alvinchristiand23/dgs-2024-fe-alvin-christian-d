@@ -1,5 +1,6 @@
 import { PiGridFour } from 'react-icons/pi';
 import { ClipLoader } from 'react-spinners';
+import { useGlobalState } from '../../hooks/useGlobalState';
 import { useCategories } from '../../hooks/useCategories';
 import { useModal } from '../../hooks/useModal';
 import SidebarSectionHeader from './SidebarSectionHeader';
@@ -8,14 +9,9 @@ import CategoriesModal from '../Modal/CategoriesModal';
 
 const SidebarCategoriesSection = () => {
   const { isOpen, tempType, setTempType, tempId, setTempId, openModal, closeModal } = useModal();
-
-  const {
-    categories,
-    isLoading,
-    handleCreateCategories,
-    handleUpdateCategories,
-    handleDeleteCategories,
-  } = useCategories();
+  const { categories } = useGlobalState();
+  const { isLoading, handleCreateCategories, handleUpdateCategories, handleDeleteCategories } =
+    useCategories();
 
   return (
     <div className='h-full py-10'>

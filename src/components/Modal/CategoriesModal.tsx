@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ClipLoader } from 'react-spinners';
-import { useWallets } from '../../hooks/useWallets';
+import { useGlobalState } from '../../hooks/useGlobalState';
 import { useCategories } from '../../hooks/useCategories';
 import { ICategoryCreate, ICategoryUpdate } from '../../types/categoryTypes';
 import InputSelect from '../Input/InputSelect';
@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpdate }: IProps) => {
-  const { wallets } = useWallets();
+  const { wallets } = useGlobalState();
   const { isLoading: isLoadingGetOne, handleGetOneCategories } = useCategories(true);
 
   const [wallet, setWallet] = useState<string>('');

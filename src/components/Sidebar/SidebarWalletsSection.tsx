@@ -1,5 +1,6 @@
 import { PiWallet } from 'react-icons/pi';
 import { ClipLoader } from 'react-spinners';
+import { useGlobalState } from '../../hooks/useGlobalState';
 import { useWallets } from '../../hooks/useWallets';
 import { useModal } from '../../hooks/useModal';
 import SidebarSectionItem from './SidebarSectionItem';
@@ -8,9 +9,8 @@ import WalletsModal from '../Modal/WalletsModal';
 
 const SidebarWalletsSection = () => {
   const { isOpen, openModal, closeModal, tempType, setTempType, tempId, setTempId } = useModal();
-
+  const { wallets } = useGlobalState();
   const {
-    wallets,
     isLoading: isLoadingWallets,
     handleCreateWallets,
     handleUpdateWallets,

@@ -6,11 +6,12 @@ import {
   getOneCategories,
   updateCategories,
 } from '../services/categoriesService';
-import { ICategory, ICategoryCreate, ICategoryUpdate } from '../types/categoryTypes';
+import { ICategoryCreate, ICategoryUpdate } from '../types/categoryTypes';
 import { toast } from 'react-toastify';
+import { useGlobalState } from './useGlobalState';
 
 export const useCategories = (isPreventEffect?: boolean) => {
-  const [categories, setCategories] = useState<ICategory[] | []>([]);
+  const { setCategories } = useGlobalState();
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -25,7 +26,7 @@ export const useCategories = (isPreventEffect?: boolean) => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setCategories]);
 
   const handleGetOneCategories = useCallback(async (id: string) => {
     setIsLoading(true);
@@ -55,31 +56,37 @@ export const useCategories = (isPreventEffect?: boolean) => {
     [handleGetCategories],
   );
 
-  const handleUpdateCategories = useCallback(async ({ id, name }: ICategoryUpdate) => {
-    setIsLoading(true);
-    try {
-      await updateCategories({ id, name });
-      setCategories((prev) => prev.map((item) => (item._id === id ? { ...item, name } : item)));
-    } catch (error) {
-      setIsError(!!error);
-    } finally {
-      toast.success('Successfully update categories.');
-      setIsLoading(false);
-    }
-  }, []);
+  const handleUpdateCategories = useCallback(
+    async ({ id, name }: ICategoryUpdate) => {
+      setIsLoading(true);
+      try {
+        await updateCategories({ id, name });
+        setCategories((prev) => prev.map((item) => (item._id === id ? { ...item, name } : item)));
+      } catch (error) {
+        setIsError(!!error);
+      } finally {
+        toast.success('Successfully update categories.');
+        setIsLoading(false);
+      }
+    },
+    [setCategories],
+  );
 
-  const handleDeleteCategories = useCallback(async (id: string) => {
-    setIsLoading(true);
-    try {
-      await deleteCategories(id);
-      setCategories((prev) => prev.filter((item) => item._id !== id));
-    } catch (error) {
-      setIsError(!!error);
-    } finally {
-      toast.success('Successfully delete categories.');
-      setIsLoading(false);
-    }
-  }, []);
+  const handleDeleteCategories = useCallback(
+    async (id: string) => {
+      setIsLoading(true);
+      try {
+        await deleteCategories(id);
+        setCategories((prev) => prev.filter((item) => item._id !== id));
+      } catch (error) {
+        setIsError(!!error);
+      } finally {
+        toast.success('Successfully delete categories.');
+        setIsLoading(false);
+      }
+    },
+    [setCategories],
+  );
 
   useEffect(() => {
     if (!isPreventEffect) {
@@ -88,7 +95,6 @@ export const useCategories = (isPreventEffect?: boolean) => {
   }, [handleGetCategories, isPreventEffect]);
 
   return {
-    categories,
     isError,
     isLoading,
     handleGetOneCategories,
