@@ -16,4 +16,5 @@ export interface IWallet {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  totalAmount?: number;
 }

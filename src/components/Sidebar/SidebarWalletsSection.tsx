@@ -6,6 +6,7 @@ import { useModal } from '../../hooks/useModal';
 import SidebarSectionItem from './SidebarSectionItem';
 import SidebarSectionHeader from './SidebarSectionHeader';
 import WalletsModal from '../Modal/WalletsModal';
+import { idrFormat } from '../../utility/idrFormat';
 
 const SidebarWalletsSection = () => {
   const { isOpen, openModal, closeModal, tempType, setTempType, tempId, setTempId } = useModal();
@@ -36,6 +37,7 @@ const SidebarWalletsSection = () => {
               key={item._id}
               icon={<PiWallet className='size-8' />}
               title={item.name}
+              subTitle={idrFormat(item.totalAmount ?? 0)}
               onEdit={() => {
                 setTempId(item._id);
                 setTempType('Edit');

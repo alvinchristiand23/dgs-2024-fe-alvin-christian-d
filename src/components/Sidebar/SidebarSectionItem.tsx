@@ -16,9 +16,9 @@ const SidebarSectionItem = ({ icon, title, subTitle, onEdit, onDelete }: IProps)
     <div className='flex items-center justify-between px-12'>
       <div className='flex items-center gap-x-4'>
         <div className={`p-2 text-white rounded-xl bg-blue-400`}>{icon}</div>
-        <div className='leading-tight'>
+        <div className='flex flex-col items-start leading-normal'>
           <h3 className='font-semibold'>{title}</h3>
-          {subTitle && <h4 className='font-medium text-secondary-text'>{subTitle}</h4>}
+          {subTitle && <h3 className='font-medium text-secondary-text'>{subTitle}</h3>}
         </div>
       </div>
       <div className='space-x-3'>

@@ -6,9 +6,10 @@ import {
   getOneWallets,
   updateWallets,
 } from '../services/walletsService';
-import { IWalletCreate, IWalletUpdate } from '../types/walletTypes';
+import { IWallet, IWalletCreate, IWalletUpdate } from '../types/walletTypes';
 import { toast } from 'react-toastify';
 import { useGlobalState } from './useGlobalState';
+import { EFlowType } from '../types/expenseItemsTypes';
 
 export const useWallets = (isPreventEffect?: boolean) => {
   const { setWallets } = useGlobalState();
@@ -20,7 +21,20 @@ export const useWallets = (isPreventEffect?: boolean) => {
     setWallets([]);
     try {
       const res = await getAllWallets();
-      setWallets(res.data);
+      const resWithTotalAmount = res.data?.map((wallet: IWallet) => {
+        const walletAmount = wallet.expenseItems?.reduce(
+          (accumulator, current) =>
+            current.flowType === EFlowType.INCOME
+              ? accumulator + current.amount
+              : accumulator - current.amount,
+          0,
+        );
+        return {
+          ...wallet,
+          totalAmount: walletAmount,
+        };
+      });
+      setWallets(resWithTotalAmount);
     } catch (error) {
       setIsError(!!error);
     } finally {
