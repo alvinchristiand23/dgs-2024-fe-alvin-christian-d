@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useWallets } from '../hooks/useWallets';
-import { IWalletCreate, IWalletUpdate } from '../types/walletTypes';
-import Input from './Input';
-import ButtonAction from './ButtonAction';
 import { ClipLoader } from 'react-spinners';
+import { useWallets } from '../../hooks/useWallets';
+import { IWalletCreate, IWalletUpdate } from '../../types/walletTypes';
+import Input from '../Input/Input';
+import ButtonAction from '../Button/ButtonAction';
 
 interface IProps {
   isOpen: boolean;
@@ -15,16 +15,8 @@ interface IProps {
   onUpdate: ({ id, name }: IWalletUpdate) => void;
 }
 
-const ExpenseItemsModal = ({
-  isOpen,
-  onClose,
-  type,
-  id,
-  isLoading,
-  onCreate,
-  onUpdate,
-}: IProps) => {
-  const { handleGetOneWallets } = useWallets();
+const WalletsModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpdate }: IProps) => {
+  const { isLoading: isLoadingGetOne, handleGetOneWallets } = useWallets(true);
 
   const [name, setName] = useState<string>('');
 
@@ -43,7 +35,7 @@ const ExpenseItemsModal = ({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [onClose]);
 
-  const getDetailCategories = useCallback(async () => {
+  const getDetailWallets = useCallback(async () => {
     if (id) {
       const res = await handleGetOneWallets(id);
       if (res) {
@@ -53,19 +45,19 @@ const ExpenseItemsModal = ({
   }, [id, handleGetOneWallets]);
 
   useEffect(() => {
-    getDetailCategories();
-  }, [getDetailCategories]);
+    getDetailWallets();
+  }, [getDetailWallets]);
 
   const handleCloseModal = () => {
     onClose();
     resetForm();
   };
 
-  const handleButtonAction = async () => {
+  const handleButtonAction = () => {
     if (type === 'Add') {
-      await onCreate({ name });
+      onCreate({ name });
     } else if (type === 'Edit' && id) {
-      await onUpdate({ id, name });
+      onUpdate({ id, name });
     }
     handleCloseModal();
   };
@@ -79,36 +71,42 @@ const ExpenseItemsModal = ({
     >
       <div
         className='relative w-full max-w-lg p-12 bg-white rounded-xl'
-        onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-        tabIndex={-1} // Ensure the modal itself is focusable
+        onClick={(e) => e.stopPropagation()}
+        tabIndex={-1}
       >
         <button
-          className='absolute top-6 right-6 text-secondary-text hover:text-accent-text'
+          className='absolute top-6 right-8 text-secondary-text hover:text-accent-text'
           onClick={handleCloseModal}
           aria-label='Close modal'
         >
           ✖
         </button>
         <h2 className='mb-6 text-xl font-bold'>{type} Wallets</h2>
-        <div className='flex flex-col gap-y-6'>
-          <Input value={name} onChange={(value) => setName(value)} placeholder='Name' />
-          <ButtonAction
-            label={
-              isLoading ? (
-                <ClipLoader loading={true} size={10} />
-              ) : type === 'Add' ? (
-                'Create'
-              ) : (
-                'Save'
-              )
-            }
-            onClick={handleButtonAction}
-            disabled={!name || isLoading}
-          />
-        </div>
+        {isLoadingGetOne ? (
+          <div className='text-center'>
+            <ClipLoader size={50} />
+          </div>
+        ) : (
+          <div className='flex flex-col gap-y-6'>
+            <Input label='Name' isRequired value={name} handleOnChange={setName} />
+            <ButtonAction
+              label={
+                isLoading ? (
+                  <ClipLoader loading={true} size={10} />
+                ) : type === 'Add' ? (
+                  'Create'
+                ) : (
+                  'Save'
+                )
+              }
+              onClick={handleButtonAction}
+              disabled={!name || isLoading}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default ExpenseItemsModal;
+export default WalletsModal;

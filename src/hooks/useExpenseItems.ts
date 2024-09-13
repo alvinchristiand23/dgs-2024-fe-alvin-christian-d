@@ -7,8 +7,9 @@ import {
   updateExpenseItems,
 } from '../services/expenseItemsService';
 import { IExpenseItem, IExpenseItemCreate, IExpenseItemUpdate } from '../types/expenseItemsTypes';
+import { toast } from 'react-toastify';
 
-export const useExpenseItems = () => {
+export const useExpenseItems = (isPreventEffect?: boolean) => {
   const [expenseItems, setExpenseItems] = useState<IExpenseItem[] | []>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,7 +21,7 @@ export const useExpenseItems = () => {
       const res = await getAllExpenseItems();
       setExpenseItems(res.data);
     } catch (error) {
-      setIsError(error ? true : false);
+      setIsError(!!error);
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +33,7 @@ export const useExpenseItems = () => {
       const res = await getOneExpenseItems(id);
       return res.data;
     } catch (error) {
-      setIsError(error ? true : false);
+      setIsError(!!error);
     } finally {
       setIsLoading(false);
     }
@@ -45,8 +46,9 @@ export const useExpenseItems = () => {
         await createExpenseItems({ title, amount, wallet, category, flowType });
         await handleGetExpenseItems();
       } catch (error) {
-        setIsError(error ? true : false);
+        setIsError(!!error);
       } finally {
+        toast.success('Successfully create expense items.');
         setIsLoading(false);
       }
     },
@@ -57,10 +59,11 @@ export const useExpenseItems = () => {
     setIsLoading(true);
     try {
       await updateExpenseItems({ id, amount });
-      setExpenseItems((prev) => prev.map((item) => (item._id === id ? { ...item, name } : item)));
+      setExpenseItems((prev) => prev.map((item) => (item._id === id ? { ...item, amount } : item)));
     } catch (error) {
-      setIsError(error ? true : false);
+      setIsError(!!error);
     } finally {
+      toast.success('Successfully update expense items.');
       setIsLoading(false);
     }
   }, []);
@@ -71,15 +74,18 @@ export const useExpenseItems = () => {
       await deleteExpenseItems(id);
       setExpenseItems((prev) => prev.filter((item) => item._id !== id));
     } catch (error) {
-      setIsError(error ? true : false);
+      setIsError(!!error);
     } finally {
+      toast.success('Successfully delete expense items.');
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    handleGetExpenseItems();
-  }, [handleGetExpenseItems]);
+    if (!isPreventEffect) {
+      handleGetExpenseItems();
+    }
+  }, [handleGetExpenseItems, isPreventEffect]);
 
   return {
     expenseItems,

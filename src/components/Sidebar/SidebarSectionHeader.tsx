@@ -1,4 +1,4 @@
-import ButtonAdd from './ButtonAdd';
+import ButtonAdd from '../Button/ButtonAdd';
 
 interface IProps {
   title: string;

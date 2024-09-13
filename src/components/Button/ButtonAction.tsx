@@ -1,15 +1,14 @@
-import { ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-interface IProps {
-  disabled?: boolean;
+interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string | ReactNode;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
 }
 
-const ButtonAction = ({ disabled = false, label, onClick }: IProps) => {
+const ButtonAction = ({ label, disabled = false, ...props }: IProps) => {
   return (
     <button
-      onClick={onClick}
+      {...props}
       disabled={disabled}
       className={`p-2 font-semibold rounded-xl text-secondary-text bg-primary-background ${
         disabled ? '' : 'hover:text-accent-text hover:bg-accent-background'

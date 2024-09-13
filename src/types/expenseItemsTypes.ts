@@ -11,7 +11,7 @@ export interface IExpenseItemCreate {
   amount: number;
   wallet: string;
   category: string;
-  flowType: EFlowType;
+  flowType: EFlowType | string;
 }
 
 export interface IExpenseItemUpdate {

@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useWallets } from '../hooks/useWallets';
-import { IWallet } from '../types/walletTypes';
-import InputSelect from './InputSelect';
-import Input from './Input';
-import ButtonAction from './ButtonAction';
-import { useCategories } from '../hooks/useCategories';
 import { ClipLoader } from 'react-spinners';
-import { ICategoryCreate, ICategoryUpdate } from '../types/categoryTypes';
+import { useWallets } from '../../hooks/useWallets';
+import { useCategories } from '../../hooks/useCategories';
+import { ICategoryCreate, ICategoryUpdate } from '../../types/categoryTypes';
+import InputSelect from '../Input/InputSelect';
+import Input from '../Input/Input';
+import ButtonAction from '../Button/ButtonAction';
 
 interface IProps {
   isOpen: boolean;
@@ -20,10 +19,9 @@ interface IProps {
 
 const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpdate }: IProps) => {
   const { wallets } = useWallets();
+  const { isLoading: isLoadingGetOne, handleGetOneCategories } = useCategories(true);
 
-  const { handleGetOneCategories } = useCategories();
-
-  const [wallet, setWallet] = useState<string>(id ? id : '');
+  const [wallet, setWallet] = useState<string>('');
   const [name, setName] = useState<string>('');
 
   const resetForm = () => {
@@ -43,10 +41,10 @@ const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpd
   }, [onClose]);
 
   const getDetailCategories = useCallback(async () => {
-    console.log(id);
     if (id) {
       const res = await handleGetOneCategories(id);
       if (res) {
+        setWallet(res.wallet);
         setName(res.name);
       }
     }
@@ -61,11 +59,11 @@ const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpd
     resetForm();
   };
 
-  const handleButtonAction = async () => {
+  const handleButtonAction = () => {
     if (type === 'Add') {
-      await onCreate({ wallet, name });
+      onCreate({ wallet, name });
     } else if (type === 'Edit' && id) {
-      await onUpdate({ id, name });
+      onUpdate({ id, name });
     }
     handleCloseModal();
   };
@@ -79,44 +77,51 @@ const CategoriesModal = ({ isOpen, onClose, type, id, isLoading, onCreate, onUpd
     >
       <div
         className='relative w-full max-w-lg p-12 bg-white rounded-xl'
-        onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-        tabIndex={-1} // Ensure the modal itself is focusable
+        onClick={(e) => e.stopPropagation()}
+        tabIndex={-1}
       >
         <button
-          className='absolute top-6 right-6 text-secondary-text hover:text-accent-text'
+          className='absolute top-6 right-8 text-secondary-text hover:text-accent-text'
           onClick={handleCloseModal}
           aria-label='Close modal'
         >
           ✖
         </button>
         <h2 className='mb-6 text-xl font-bold'>{type} Categories</h2>
-        <div className='flex flex-col gap-y-6'>
-          {type === 'Add' ? (
+        {isLoadingGetOne ? (
+          <div className='text-center'>
+            <ClipLoader size={50} />
+          </div>
+        ) : (
+          <div className='flex flex-col gap-y-6'>
             <InputSelect
+              label='Wallet'
+              isRequired
               placeholder='Wallet'
               value={wallet}
-              onChange={(value) => setWallet(value)}
-              options={wallets?.map((item: IWallet) => ({
+              handleOnChange={setWallet}
+              options={wallets?.map((item) => ({
                 label: item.name,
                 value: item._id,
               }))}
+              disabled={type === 'Edit'}
             />
-          ) : null}
-          <Input value={name} onChange={(value) => setName(value)} placeholder='Name' />
-          <ButtonAction
-            label={
-              isLoading ? (
-                <ClipLoader loading={true} size={10} />
-              ) : type === 'Add' ? (
-                'Create'
-              ) : (
-                'Save'
-              )
-            }
-            onClick={handleButtonAction}
-            disabled={type === 'Add' ? !name || !wallet || isLoading : !name || isLoading}
-          />
-        </div>
+            <Input label='Name' isRequired value={name} handleOnChange={setName} />
+            <ButtonAction
+              label={
+                isLoading ? (
+                  <ClipLoader loading={true} size={10} />
+                ) : type === 'Add' ? (
+                  'Create'
+                ) : (
+                  'Save'
+                )
+              }
+              onClick={handleButtonAction}
+              disabled={type === 'Add' ? !name || !wallet || isLoading : !name || isLoading}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

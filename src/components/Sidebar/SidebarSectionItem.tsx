@@ -1,7 +1,7 @@
 import React from 'react';
-import ButtonAction from './ButtonAction';
 import { PiPencilSimpleBold, PiTrashSimpleBold } from 'react-icons/pi';
 import Swal from 'sweetalert2';
+import ButtonAction from '../Button/ButtonAction';
 
 interface IProps {
   icon: React.ReactNode;
@@ -15,10 +15,10 @@ const SidebarSectionItem = ({ icon, title, subTitle, onEdit, onDelete }: IProps)
   return (
     <div className='flex items-center justify-between px-12'>
       <div className='flex items-center gap-x-4'>
-        <div className={`p-2 text-white rounded-xl bg-red-500`}>{icon}</div>
+        <div className={`p-2 text-white rounded-xl bg-blue-400`}>{icon}</div>
         <div className='leading-tight'>
           <h3 className='font-semibold'>{title}</h3>
-          {subTitle ? <h4 className='font-medium text-secondary-text'>{subTitle}</h4> : null}
+          {subTitle && <h4 className='font-medium text-secondary-text'>{subTitle}</h4>}
         </div>
       </div>
       <div className='space-x-3'>

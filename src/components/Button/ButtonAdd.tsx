@@ -1,14 +1,14 @@
+import { ButtonHTMLAttributes } from 'react';
 import { PiPlusBold } from 'react-icons/pi';
 
-interface IProps {
+interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   disabled?: boolean;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const ButtonAdd = ({ disabled, onClick }: IProps) => {
+const ButtonAdd = ({ disabled, ...props }: IProps) => {
   return (
     <button
-      onClick={onClick}
+      {...props}
       disabled={disabled}
       className={`p-2 border-2 border-dashed rounded-xl border-border text-secondary-text ${
         disabled

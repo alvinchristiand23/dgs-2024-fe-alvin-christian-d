@@ -7,8 +7,9 @@ import {
   updateCategories,
 } from '../services/categoriesService';
 import { ICategory, ICategoryCreate, ICategoryUpdate } from '../types/categoryTypes';
+import { toast } from 'react-toastify';
 
-export const useCategories = () => {
+export const useCategories = (isPreventEffect?: boolean) => {
   const [categories, setCategories] = useState<ICategory[] | []>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,7 +21,7 @@ export const useCategories = () => {
       const res = await getAllCategories();
       setCategories(res.data);
     } catch (error) {
-      setIsError(error ? true : false);
+      setIsError(!!error);
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +33,7 @@ export const useCategories = () => {
       const res = await getOneCategories(id);
       return res.data;
     } catch (error) {
-      setIsError(error ? true : false);
+      setIsError(!!error);
     } finally {
       setIsLoading(false);
     }
@@ -45,8 +46,9 @@ export const useCategories = () => {
         await createCategories({ wallet, name });
         await handleGetCategories();
       } catch (error) {
-        setIsError(error ? true : false);
+        setIsError(!!error);
       } finally {
+        toast.success('Successfully create categories.');
         setIsLoading(false);
       }
     },
@@ -59,8 +61,9 @@ export const useCategories = () => {
       await updateCategories({ id, name });
       setCategories((prev) => prev.map((item) => (item._id === id ? { ...item, name } : item)));
     } catch (error) {
-      setIsError(error ? true : false);
+      setIsError(!!error);
     } finally {
+      toast.success('Successfully update categories.');
       setIsLoading(false);
     }
   }, []);
@@ -71,15 +74,18 @@ export const useCategories = () => {
       await deleteCategories(id);
       setCategories((prev) => prev.filter((item) => item._id !== id));
     } catch (error) {
-      setIsError(error ? true : false);
+      setIsError(!!error);
     } finally {
+      toast.success('Successfully delete categories.');
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    handleGetCategories();
-  }, [handleGetCategories]);
+    if (!isPreventEffect) {
+      handleGetCategories();
+    }
+  }, [handleGetCategories, isPreventEffect]);
 
   return {
     categories,

@@ -1,21 +1,22 @@
-import { EFlowType } from '../types/expenseItemsTypes';
-import { PiMoneyWavy, PiPencilSimpleBold, PiXBold } from 'react-icons/pi';
-import { idrFormat } from '../utility/idrFormat';
-import ButtonAction from './ButtonAction';
-import { dateFormat } from '../utility/dateFormat';
 import Swal from 'sweetalert2';
+import { PiMoneyWavy, PiPencilSimpleBold, PiXBold } from 'react-icons/pi';
+import ButtonAction from './Button/ButtonAction';
+import { EFlowType } from '../types/expenseItemsTypes';
+import { idrFormat } from '../utility/idrFormat';
+import { dateFormat } from '../utility/dateFormat';
 
 interface IProps {
   title: string;
   date: string;
   amount: number;
   flowType: EFlowType;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
-const ExpenseItemCard = ({ title, date, amount, flowType, onDelete }: IProps) => {
+const ExpenseItemCard = ({ title, date, amount, flowType, onEdit, onDelete }: IProps) => {
   return (
-    <div className='flex items-center justify-between p-8 mx-12 bg-white rounded-xl'>
+    <div className='flex items-center justify-between w-full p-8 bg-white rounded-xl'>
       <div className='flex gap-x-4'>
         <PiMoneyWavy className='size-12' />
         <div className='flex flex-col'>
@@ -28,7 +29,7 @@ const ExpenseItemCard = ({ title, date, amount, flowType, onDelete }: IProps) =>
           amount,
         )}`}</h3>
         <div className='flex gap-x-4'>
-          <ButtonAction label={<PiPencilSimpleBold />} onClick={() => {}} />
+          <ButtonAction label={<PiPencilSimpleBold />} onClick={onEdit} />
           <ButtonAction
             label={<PiXBold />}
             onClick={() => {
